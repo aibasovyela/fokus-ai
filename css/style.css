@@ -230,7 +230,9 @@ a:hover { text-decoration: underline; }
   padding: 9px 18px; border-radius: 10px; border: 1px solid var(--line); background: transparent;
   color: var(--cream-faint); cursor: pointer; transition: all .18s; }
 .cal-tab:hover { color: var(--cream-dim); }
-.cal-tab.active { color: var(--ink); background: var(--yellow); border-color: var(--yellow); font-weight: 700; }
+.cal-tab.active { color: var(--ink); background: var(--yellow); border-color: var(--yellow); font-weight: 700;
+  box-shadow: 0 0 0 1px rgba(245,197,24,.35), 0 0 18px rgba(245,197,24,.55);
+  animation: calPulse 2.6s ease-in-out infinite; }
 
 .cal-months { max-width: 420px; margin: 0 auto; }
 .cal-month { animation: calFade .28s ease; }
