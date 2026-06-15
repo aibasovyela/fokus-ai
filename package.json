@@ -1,0 +1,12 @@
+{
+  "name": "fokus-ai",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Закрытый кабинет участников программы «Фокус ИИ» — Yelumio AI Studio",
+  "scripts": {
+    "start": "serve . -l ${PORT:-3000} -s"
+  },
+  "dependencies": {
+    "serve": "^14.2.6"
+  }
+}
