@@ -237,7 +237,6 @@ const SITE = {
   library: [
     { type: "link", title: "Вся папка раздаточных материалов (Google Drive)", url: "https://drive.google.com/drive/folders/19XATtUlaZNb6pPodKeMscz1HtjelTWw5" },
     { type: "pdf",  title: "Список приложений для ведения Instagram", url: "https://drive.google.com/file/d/1BeUmwsDeJFsx0BR1mHBOzAp0ru5M0Gu1/view" },
-    { type: "link", title: "Список из 100 нейросетей 2026", url: "https://theresanaiforthat.com" },
-    { type: "link", title: "Карта нейросетей (обновляется)", url: "https://landscape.lfai.foundation" }
+    { type: "link", title: "Список из 100 нейросетей", url: "https://app.notion.com/p/26f4399e3bf3808898fcf7430daff059?v=26f4399e3bf380a2a683000c3d20d6eb&source=copy_link" }
   ]
 };

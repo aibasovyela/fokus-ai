@@ -278,8 +278,10 @@ svg.map { width: 100%; height: auto; display: block; }
   border: 1px solid rgba(245,197,24,.25); pointer-events: none; }
 
 /* кольцо прогресса города */
-.city-progress { position: absolute; top: 16px; right: 130px; width: 44px; height: 44px; pointer-events: none; }
-.city-progress svg { width: 44px; height: 44px; transform: rotate(-90deg); }
+.city-progress { position: absolute; top: 14px; right: 14px; width: 46px; height: 46px; z-index: 8; pointer-events: none;
+  background: rgba(15,14,12,.55); border-radius: 50%; box-shadow: 0 4px 16px rgba(0,0,0,.4); }
+.city-progress svg { width: 46px; height: 46px; transform: rotate(-90deg); }
+body.theme-light .city-progress { background: rgba(255,253,247,.8); box-shadow: 0 4px 14px rgba(0,0,0,.18); }
 .cp-bg { fill: none; stroke: var(--line); stroke-width: 3.2; }
 .cp-fill { fill: none; stroke: var(--yellow); stroke-width: 3.2; stroke-linecap: round;
   transition: stroke-dashoffset .6s cubic-bezier(.5,0,.1,1); filter: drop-shadow(0 0 5px rgba(245,197,24,.55)); }
@@ -375,8 +377,8 @@ svg.map { width: 100%; height: auto; display: block; }
 }
 
 /* ===== темы города — чистая строка наверху ===== */
-.city-topics { position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
-  width: min(94%, 900px); z-index: 5; pointer-events: none; opacity: 0; transition: opacity .4s ease .15s; }
+.city-topics { position: absolute; top: 12px; left: 14px; right: 74px;
+  z-index: 5; pointer-events: none; opacity: 0; transition: opacity .4s ease .15s; }
 .city-topics.show { opacity: 1; }
 .ct-head { text-align: center; font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: var(--yellow);
   margin-bottom: 10px; text-shadow: 0 2px 8px rgba(0,0,0,.9); }
@@ -392,7 +394,7 @@ svg.map { width: 100%; height: auto; display: block; }
 .ct-chip.done .ct-n { background: var(--yellow); border-color: var(--yellow); color: var(--ink); box-shadow: 0 0 14px rgba(245,197,24,.5); }
 .ct-chip.done .ct-t { color: var(--cream); }
 @media (max-width: 880px) {
-  .city-topics { top: 8px; width: 96%; }
+  .city-topics { top: 8px; left: 10px; right: 60px; }
   .ct-row { gap: 7px; }
   .ct-chip { min-width: 0; flex-basis: calc(50% - 4px); padding: 8px 10px; }
   .ct-t { font-size: 11px; }
