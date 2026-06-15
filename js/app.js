@@ -456,3 +456,59 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     submit.disabled = false;
   });
 })();
+
+/* ===== ГРАФИК СОЗВОНОВ (календарь) ===== */
+(function () {
+  const host = document.getElementById('calMonths');
+  if (!host) return;
+
+  // Созвоны: каждый ВТ · ЧТ · ВС, 19:00 (Алматы). Старт 16 июня 2026, до конца июля 2026.
+  const CALLS = {
+    5:  [16, 18, 21, 23, 25, 28, 30],                       // Июнь (месяц = 5, 0-индекс)
+    6:  [2, 5, 7, 9, 12, 14, 16, 19, 21, 23, 26, 28, 30],   // Июль
+  };
+  const YEAR = 2026;
+  const MONTH_NAMES = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+  const WD = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
+
+  let total = 0;
+  Object.values(CALLS).forEach(arr => total += arr.length);
+  const cnt = document.getElementById('calCount');
+  if (cnt) cnt.textContent = total;
+
+  const monthGrid = (m) => {
+    const live = new Set(CALLS[m] || []);
+    const firstDay = new Date(YEAR, m, 1).getDay();      // 0=Вс..6=Сб
+    const lead = (firstDay + 6) % 7;                      // сдвиг к Пн-старту
+    const daysIn = new Date(YEAR, m + 1, 0).getDate();
+
+    let cells = '';
+    WD.forEach(w => cells += `<div class="cal-wd">${w}</div>`);
+    for (let i = 0; i < lead; i++) cells += `<div class="cal-day empty"></div>`;
+    for (let d = 1; d <= daysIn; d++) {
+      const cls = live.has(d) ? 'cal-day live' : 'cal-day';
+      const t = live.has(d) ? ` title="Созвон · ${d} ${MONTH_NAMES[m].toLowerCase()}, 19:00"` : '';
+      cells += `<div class="${cls}"${t}>${d}</div>`;
+    }
+    const sub = (CALLS[m] || []).length + ' созвонов · 19:00';
+    return `<div class="cal-month">
+      <div class="cal-month-name">${MONTH_NAMES[m]} ${YEAR}</div>
+      <div class="cal-month-meta">${sub}</div>
+      <div class="cal-grid">${cells}</div>
+    </div>`;
+  };
+
+  host.innerHTML = Object.keys(CALLS).map(m => monthGrid(+m)).join('');
+
+  // Ближайший созвон
+  const next = document.getElementById('calNext');
+  if (next) {
+    const m0 = +Object.keys(CALLS)[0];
+    const d0 = CALLS[m0][0];
+    next.innerHTML = `<span class="cal-next-flag">🔴</span>
+      <div>
+        <div class="cal-next-label">Ближайший созвон · старт программы</div>
+        <div class="cal-next-date">Вторник, <b>${d0} ${MONTH_NAMES[m0].toLowerCase()}</b>, 19:00 · Алматы</div>
+      </div>`;
+  }
+})();
