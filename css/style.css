@@ -217,8 +217,24 @@ a:hover { text-decoration: underline; }
 .cal-dot.live { background: var(--yellow); box-shadow: 0 0 0 3px rgba(245,197,24,.16), 0 0 14px rgba(245,197,24,.6); }
 .cal-count { color: var(--yellow); font-size: 13px; letter-spacing: .06em; }
 
-.cal-months { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
-@media (max-width: 620px) { .cal-months { grid-template-columns: 1fr; } }
+/* переключатель месяцев */
+.cal-switch { display: flex; align-items: center; justify-content: center; gap: 12px; margin: 22px 0 16px; }
+.cal-nav { width: 38px; height: 38px; flex: none; display: flex; align-items: center; justify-content: center;
+  background: var(--ink-2); border: 1px solid var(--line); border-radius: 50%; color: var(--cream);
+  font-size: 20px; line-height: 1; cursor: pointer; transition: border-color .2s, transform .15s, color .2s; }
+.cal-nav:hover { border-color: var(--yellow); color: var(--yellow); }
+.cal-nav:active { transform: scale(.92); }
+.cal-nav:disabled { opacity: .3; cursor: default; border-color: var(--line); color: var(--cream-faint); transform: none; }
+.cal-switch-tabs { display: flex; gap: 6px; }
+.cal-tab { font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase;
+  padding: 9px 18px; border-radius: 10px; border: 1px solid var(--line); background: transparent;
+  color: var(--cream-faint); cursor: pointer; transition: all .18s; }
+.cal-tab:hover { color: var(--cream-dim); }
+.cal-tab.active { color: var(--ink); background: var(--yellow); border-color: var(--yellow); font-weight: 700; }
+
+.cal-months { max-width: 420px; margin: 0 auto; }
+.cal-month { animation: calFade .28s ease; }
+@keyframes calFade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
 .cal-month {
   background: linear-gradient(180deg, var(--ink-2), #100f0a);

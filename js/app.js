@@ -498,12 +498,39 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     </div>`;
   };
 
-  host.innerHTML = Object.keys(CALLS).map(m => monthGrid(+m)).join('');
+  const months = Object.keys(CALLS).map(Number);   // [5, 6]
+  let cur = 0;                                      // индекс в months
 
-  // Ближайший созвон
+  // Переключатель месяцев (кнопки-табы)
+  const tabs = document.getElementById('calTabs');
+  if (tabs) {
+    tabs.innerHTML = months.map((m, i) =>
+      `<button class="cal-tab" data-i="${i}">${MONTH_NAMES[m]}</button>`).join('');
+  }
+  const prevBtn = document.getElementById('calPrev');
+  const nextBtn = document.getElementById('calNextBtn');
+
+  const render = () => {
+    host.innerHTML = monthGrid(months[cur]);
+    if (tabs) tabs.querySelectorAll('.cal-tab').forEach((b, i) =>
+      b.classList.toggle('active', i === cur));
+    if (prevBtn) prevBtn.disabled = cur === 0;
+    if (nextBtn) nextBtn.disabled = cur === months.length - 1;
+  };
+
+  if (tabs) tabs.addEventListener('click', e => {
+    const b = e.target.closest('.cal-tab'); if (!b) return;
+    cur = +b.dataset.i; render();
+  });
+  if (prevBtn) prevBtn.addEventListener('click', () => { if (cur > 0) { cur--; render(); } });
+  if (nextBtn) nextBtn.addEventListener('click', () => { if (cur < months.length - 1) { cur++; render(); } });
+
+  render();
+
+  // Ближайший созвон (над календарём)
   const next = document.getElementById('calNext');
   if (next) {
-    const m0 = +Object.keys(CALLS)[0];
+    const m0 = months[0];
     const d0 = CALLS[m0][0];
     next.innerHTML = `<span class="cal-next-flag">🔴</span>
       <div>
