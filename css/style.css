@@ -41,6 +41,13 @@ body.theme-light .city-back, body.theme-light .city-more { background: rgba(255,
 body.theme-light .city-name { color: #1a1610; text-shadow: none; }
 body.theme-light .city-tag { color: rgba(33,28,20,.6); text-shadow: none; }
 body.theme-light .ct-head { color: var(--bronze); text-shadow: none; }
+/* календарь в светлой теме (карточка месяца не должна быть тёмной) */
+body.theme-light .cal-month { background: linear-gradient(180deg, #ffffff, #f0e8d4); }
+body.theme-light .cal-next { background: #fffdf7; }
+/* тёмный текст на жёлтых кнопках/акцентах в светлой теме */
+body.theme-light .gate-btn, body.theme-light .welcome-btn, body.theme-light .hw-submit,
+body.theme-light .hw-type.active, body.theme-light .cal-tab.active, body.theme-light .cal-day.live,
+body.theme-light .ct-chip.done .ct-n { color: #0F0E0C; }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { height: 100%; }
