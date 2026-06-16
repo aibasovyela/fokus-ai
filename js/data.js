@@ -10,7 +10,8 @@ const SITE = {
     "asylzhan26": { name: "Асылжан" },
     "daniyar26":  { name: "Данияр" },
     "dariyan26":  { name: "Дариян" },
-    "aisulu26":   { name: "Айсулу" }
+    "aisulu26":   { name: "Айсулу" },
+    "daniil26":   { name: "Даниил" }
   },
 
   groupProgress: 0,   // <-- сколько модулей группа ЗАВЕРШИЛА (0 = только стартуем, текущий — Актау).

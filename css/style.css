@@ -15,6 +15,7 @@
 
 /* светлая тема — UI становится кремово-светлым, 3D-сцена остаётся тёмной */
 body.theme-light {
+  color-scheme: light;
   --ink: #F3ECDC;
   --cream: #211C14;
   --ink-2: #FFFFFF;
@@ -44,6 +45,7 @@ body.theme-light .ct-head { color: var(--bronze); text-shadow: none; }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { height: 100%; }
 body {
+  color-scheme: dark;
   background: var(--ink);
   color: var(--cream);
   font-family: var(--body);
@@ -186,6 +188,7 @@ a:hover { text-decoration: underline; }
 .hw-input { font-family: var(--body); font-size: 15px; color: var(--cream); background: var(--ink-2);
   border: 1px solid var(--line); border-radius: 11px; padding: 13px 15px; outline: none; transition: border-color .2s; width: 100%; }
 .hw-input:focus { border-color: var(--yellow); }
+.hw-input option { background: var(--ink-2); color: var(--cream); }
 .hw-textarea { min-height: 130px; resize: vertical; line-height: 1.5; }
 .hw-types { display: flex; gap: 8px; flex-wrap: wrap; }
 .hw-type { font-family: var(--mono); font-size: 12px; letter-spacing: .04em; padding: 10px 16px; border-radius: 10px;
