@@ -394,29 +394,51 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
   const form = document.getElementById('hwForm');
   if (!form) return;
   const sel = document.getElementById('hwModule');
-  SITE.modules.forEach((m, i) => {
-    const o = document.createElement('option');
-    o.value = i; o.textContent = 'Модуль ' + String(m.id).padStart(2, '0') + ' · ' + m.title;
-    sel.appendChild(o);
+  const esc = (s) => String(s).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+
+  // Плоский список всех ДЗ по всем модулям (на модуль может быть несколько — по созвонам)
+  const TASKS = [];
+  SITE.modules.forEach((m) => {
+    const list = m.homeworks || (m.homework ? [m.homework] : []);
+    list.forEach((hw) => TASKS.push({ m, hw }));
   });
 
-  // Карточка с условием ДЗ выбранного модуля
+  const moduleLabel = (m) => 'Модуль ' + String(m.id).padStart(2, '0') + ' · ' + m.title;
+  const callLabel = (hw) => hw.call ? 'Созвон ' + hw.call : '';
+  const optionLabel = (t) => {
+    const c = callLabel(t.hw);
+    return moduleLabel(t.m) + (c ? ' · ' + c : '') + ' — ' + t.hw.title;
+  };
+
+  if (TASKS.length) {
+    TASKS.forEach((t, i) => {
+      const o = document.createElement('option');
+      o.value = i; o.textContent = optionLabel(t);
+      sel.appendChild(o);
+    });
+  } else {
+    const o = document.createElement('option');
+    o.value = ''; o.textContent = 'Задания появятся после созвонов';
+    sel.appendChild(o);
+  }
+
+  // Карточка с условием выбранного ДЗ
   const taskBox = document.getElementById('hwTask');
-  const esc = (s) => String(s).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
   function renderTask() {
     if (!taskBox) return;
-    const m = SITE.modules[+sel.value];
-    const hw = m && m.homework;
-    if (!hw) {
+    const t = TASKS[+sel.value];
+    if (!t) {
       taskBox.className = 'hw-task hw-task--soon';
-      taskBox.innerHTML = '<div class="hw-task-soon">📭 Задание по этому модулю появится здесь после созвона.</div>';
+      taskBox.innerHTML = '<div class="hw-task-soon">📭 Задания появятся здесь после созвонов.</div>';
       return;
     }
+    const { m, hw } = t;
     taskBox.className = 'hw-task';
     const steps = (hw.steps || []).map(s => '<li>' + esc(s) + '</li>').join('');
     const crit = (hw.criteria || []).map(c => '<li>' + esc(c) + '</li>').join('');
+    const c = callLabel(hw);
     taskBox.innerHTML =
-      '<div class="hw-task-tag">Домашнее задание · Модуль ' + String(m.id).padStart(2, '0') + ' «' + esc(m.title) + '»</div>' +
+      '<div class="hw-task-tag">Домашнее задание · Модуль ' + String(m.id).padStart(2, '0') + ' «' + esc(m.title) + '»' + (c ? ' · ' + esc(c) : '') + '</div>' +
       '<div class="hw-task-title">' + esc(hw.title) + '</div>' +
       (hw.intro ? '<div class="hw-task-intro">' + esc(hw.intro) + '</div>' : '') +
       (steps ? '<div class="hw-task-h">Что сделать</div><ol class="hw-task-steps">' + steps + '</ol>' : '') +
@@ -459,8 +481,15 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     e.preventDefault();
     if (!SITE.homeworkEndpoint) { setStatus('Приём домашних заданий ещё настраивается — загрузка откроется совсем скоро 🦁', 'err'); return; }
     const name = localStorage.getItem('fokus_name') || 'участник';
-    const m = SITE.modules[+sel.value];
-    const payload = { name, module: 'Модуль ' + m.id + ' · ' + m.title, type };
+    const t = TASKS[+sel.value];
+    if (!t) { setStatus('Выбери задание', 'err'); return; }
+    const { m, hw } = t;
+    const c = callLabel(hw);
+    const payload = {
+      name, type,
+      module: 'Модуль ' + String(m.id).padStart(2, '0') + ' · ' + m.title,
+      homework: (c ? c + ' · ' : '') + hw.title
+    };
     if (type === 'text') { if (!text.value.trim()) { setStatus('Напиши текст задания', 'err'); return; } payload.content = text.value.trim(); }
     else if (type === 'link') { if (!link.value.trim()) { setStatus('Вставь ссылку', 'err'); return; } payload.content = link.value.trim(); }
     else {
