@@ -399,6 +399,33 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     o.value = i; o.textContent = 'Модуль ' + String(m.id).padStart(2, '0') + ' · ' + m.title;
     sel.appendChild(o);
   });
+
+  // Карточка с условием ДЗ выбранного модуля
+  const taskBox = document.getElementById('hwTask');
+  const esc = (s) => String(s).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+  function renderTask() {
+    if (!taskBox) return;
+    const m = SITE.modules[+sel.value];
+    const hw = m && m.homework;
+    if (!hw) {
+      taskBox.className = 'hw-task hw-task--soon';
+      taskBox.innerHTML = '<div class="hw-task-soon">📭 Задание по этому модулю появится здесь после созвона.</div>';
+      return;
+    }
+    taskBox.className = 'hw-task';
+    const steps = (hw.steps || []).map(s => '<li>' + esc(s) + '</li>').join('');
+    const crit = (hw.criteria || []).map(c => '<li>' + esc(c) + '</li>').join('');
+    taskBox.innerHTML =
+      '<div class="hw-task-tag">Домашнее задание · Модуль ' + String(m.id).padStart(2, '0') + ' «' + esc(m.title) + '»</div>' +
+      '<div class="hw-task-title">' + esc(hw.title) + '</div>' +
+      (hw.intro ? '<div class="hw-task-intro">' + esc(hw.intro) + '</div>' : '') +
+      (steps ? '<div class="hw-task-h">Что сделать</div><ol class="hw-task-steps">' + steps + '</ol>' : '') +
+      (crit ? '<div class="hw-task-h">Критерии зачёта</div><ul class="hw-task-crit">' + crit + '</ul>' : '') +
+      (hw.deadline ? '<div class="hw-task-deadline">⏳ Дедлайн: ' + esc(hw.deadline) + '</div>' : '');
+  }
+  sel.addEventListener('change', renderTask);
+  renderTask();
+
   let type = 'text';
   const text = document.getElementById('hwText');
   const fileWrap = document.getElementById('hwFileWrap');
