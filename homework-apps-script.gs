@@ -1,53 +1,45 @@
 /**
- * ФОКУС ИИ — приём домашних заданий на Google Drive.
+ * ФОКУС ИИ → Google Drive. Дублирует домашние задания в папку на Drive.
+ * Папка уже вписана ниже (FOLDER_ID). Тебе нужно только опубликовать скрипт.
  *
- * КАК ПОДКЛЮЧИТЬ (5 минут):
- * 1. Создай папку в своём Google Drive (например «Фокус ИИ — ДЗ»).
- *    Открой её и скопируй ID из адреса:
- *    drive.google.com/drive/folders/ВОТ_ЭТОТ_ID
- * 2. Зайди на script.google.com → New project. Вставь весь этот код.
- * 3. Впиши свой ID папки в строку FOLDER_ID ниже.
- * 4. Deploy → New deployment → тип «Web app»:
- *       Execute as:      Me (твой аккаунт)
+ * КАК ПОДКЛЮЧИТЬ (2 минуты):
+ * 1. Открой script.google.com → New project. Удали пример, вставь ВЕСЬ этот код.
+ * 2. Сверху: Deploy → New deployment → шестерёнка → тип «Web app».
+ *       Execute as:      Me (твой Google)
  *       Who has access:  Anyone
- *    Нажми Deploy, разреши доступ. Скопируй «Web app URL».
- * 5. Вставь этот URL в файл js/data.js → homeworkEndpoint: "ВСТАВЬ_СЮДА".
- * Готово — работы участников будут падать прямо в папку на Drive.
+ *    Нажми Deploy → Authorize access → выбери свой аккаунт → Allow.
+ * 3. Скопируй «Web app URL» (вида https://script.google.com/macros/s/…/exec)
+ *    и пришли его мне. Я подключу — и домашки начнут падать в папку.
  */
 
-const FOLDER_ID = 'PUT_YOUR_DRIVE_FOLDER_ID_HERE';
+const FOLDER_ID = '1FlDcKg-B1MRlr0JZTEWLWNOhudWZ7VMk';
 
 function doPost(e) {
   try {
-    const data = JSON.parse(e.postData.contents);
+    const d = JSON.parse(e.postData.contents);
     const folder = DriveApp.getFolderById(FOLDER_ID);
+    const stamp = Utilities.formatDate(new Date(), 'GMT+5', 'yyyy-MM-dd HH:mm');
 
-    const now = new Date();
-    const stamp = Utilities.formatDate(now, 'GMT+5', 'yyyy-MM-dd HH:mm');
-    const who = (data.name || 'аноним') + ' · ' + (data.module || 'без модуля');
-
-    if (data.type === 'file' && data.fileData) {
-      const bytes = Utilities.base64Decode(data.fileData);
-      const blob = Utilities.newBlob(bytes, data.fileMime || 'application/octet-stream', data.fileName || 'file');
-      const file = folder.createFile(blob);
-      file.setName(stamp + ' — ' + who + ' — ' + (data.fileName || 'file'));
-    } else {
-      const body = data.type === 'link'
-        ? ('Ссылка: ' + (data.content || ''))
-        : (data.content || '');
-      folder.createFile(stamp + ' — ' + who + '.txt', body, MimeType.PLAIN_TEXT);
+    if (d.type === 'profile') {
+      folder.createFile(stamp + ' — ПРОФИЛЬ — ' + (d.name || 'аноним') + '.txt',
+        'Имя: ' + (d.name || '') + '\nСфера: ' + (d.sphere || ''), MimeType.PLAIN_TEXT);
+      return ok();
     }
 
-    return ContentService
-      .createTextOutput(JSON.stringify({ ok: true }))
-      .setMimeType(ContentService.MimeType.JSON);
+    const who = (d.name || 'аноним') + ' · ' + (d.homework || d.module || '');
+    if (d.type === 'file' && d.fileData) {
+      const blob = Utilities.newBlob(Utilities.base64Decode(d.fileData),
+        d.fileMime || 'application/octet-stream', d.fileName || 'file');
+      folder.createFile(blob).setName(stamp + ' — ' + who + ' — ' + (d.fileName || 'file'));
+    } else {
+      const body = d.type === 'link' ? ('Ссылка: ' + (d.content || '')) : (d.content || '');
+      folder.createFile(stamp + ' — ' + who + '.txt', body, MimeType.PLAIN_TEXT);
+    }
+    return ok();
   } catch (err) {
-    return ContentService
-      .createTextOutput(JSON.stringify({ ok: false, error: String(err) }))
+    return ContentService.createTextOutput(JSON.stringify({ ok: false, error: String(err) }))
       .setMimeType(ContentService.MimeType.JSON);
   }
 }
-
-function doGet() {
-  return ContentService.createTextOutput('Фокус ИИ — приём ДЗ работает.');
-}
+function ok() { return ContentService.createTextOutput(JSON.stringify({ ok: true })).setMimeType(ContentService.MimeType.JSON); }
+function doGet() { return ContentService.createTextOutput('Фокус ИИ → Drive: работает.'); }
